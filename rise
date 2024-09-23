@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot para Curso</title>
+</head>
+<body>
+    <h2>Chatbot para Curso: <span id="nombreCurso"></span></h2>
+    <textarea id="inputMensaje" rows="4" cols="50" placeholder="Escribe tu pregunta aquí..."></textarea><br>
+    <button onclick="enviarMensaje()">Enviar</button>
+    <p id="respuestaChatbot"></p>
+
+    <script>
+        const apiKey = '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';
+
+        // Asigna el nombre del curso (esto puede ser dinámico según el curso en Rise 360)
+        const nombreCurso = "Introducción al Diseño Gráfico";  // Puedes cambiar esto según el curso.
+        document.getElementById("nombreCurso").innerText = nombreCurso;
+
+        async function enviarMensaje() {
+            const mensaje = document.getElementById('inputMensaje').value;
+            const url = 'https://api.openai.com/v1/chat/completions';
+
+            const respuesta = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4',  // O usa 'gpt-3.5-turbo'
+                    messages: [
+                        { role: 'system', content: `Eres un asistente para el curso ${nombreCurso}. Ayuda a los estudiantes respondiendo preguntas relacionadas con el curso.` },
+                        { role: 'user', content: mensaje }
+                    ]
+                })
+            });
+
+            const datos = await respuesta.json();
+            document.getElementById('respuestaChatbot').innerText = datos.choices[0].message.content;
+        }
+    </script>
+</body>
+</html>
